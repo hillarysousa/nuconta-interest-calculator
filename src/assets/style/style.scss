@@ -1,0 +1,32 @@
+body {
+  background: #f5f5f5;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#root {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+#calc-area, #result-area {
+  width: 30%;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: flex-end;
+}
+
+#result-area {
+  background: white;
+  padding: 30px;
+  img {
+    max-width: 100%;
+    width: 140px;
+    align-self: center;
+    position: relative;
+    margin-top: -100px;
+    margin-bottom: 40px;
+  }
+}

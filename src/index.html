@@ -1,0 +1,29 @@
+<head>
+  <title>NuConta Interest Calculator</title>
+  <script type="module" src="index.js"></script>
+  <body>
+    <main id="root">
+      <section id="calc-area">
+        <div id="amount">
+          <p>First deposit</p>
+          <span id="currency-amt">R$</span>
+          <input id="amt-input" value="1000">
+          <button id="sbt-btn">-</button>
+          <button id="add-btn">+</button>
+        </div>
+        <div id="period">
+          <p>For</p>
+          <p id="month-qty">6 <span id="month-txt"></span>months</p>
+          <input type="range" min="6" max="60">
+        </div>
+      </section>
+      <section id="result-area">
+        <img src="assets/img/relaxing.png">
+        <span id="result-txt">after <span id="months">60 months</span> you would have</span>
+        <h1 id="total-value">R$1.202,00</h1>
+        <p id="gross-amt">(gross amount <span id="gross-value">R$1.302,00</span>)</p>
+        <p id="disclaimer">This estimate does not constitute a guarantee of future earnings. It is only an estimate based on today's Interbank Deposit rate for the entire period that your deposit would remain in your NuConta account, and considering no withdrawals.</p>
+      </section>
+    </main>
+  </body>
+</head>
