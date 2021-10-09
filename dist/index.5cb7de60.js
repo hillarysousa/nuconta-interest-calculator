@@ -456,7 +456,95 @@ function hmrAcceptRun(bundle, id) {
 
 },{}],"6cF5V":[function(require,module,exports) {
 var _styleScss = require("./assets/style/style.scss");
+var _dataJson = require("./data.json");
+const amount = localStorage.getItem('amount') ? parseFloat(localStorage.getItem('amount')) : _dataJson['initial-amount'];
+const period = localStorage.getItem('period') ? parseInt(localStorage.getItem('period')) : _dataJson.period;
+const { interest  } = _dataJson;
+const tax = [
+    {
+        period: 19,
+        rate: 15
+    },
+    {
+        period: 13,
+        rate: 17.5
+    },
+    {
+        period: 7,
+        rate: 20
+    },
+    {
+        period: 0,
+        rate: 22.5
+    }, 
+];
+const output = {
+    gross: 0,
+    tax: 0,
+    violations: []
+};
+const amountInput = document.getElementById('amt-input');
+const periodRange = document.getElementById('period-range');
+const periodText = document.querySelectorAll('.month-qty');
+const totalValueText = document.getElementById('total-value');
+const grossValueText = document.getElementById('gross-value');
+amountInput.value = amount;
+periodRange.value = period;
+periodText.forEach((el)=>el.textContent = `${periodRange.value} ${periodRange.value > 1 ? 'months' : 'month'}`
+);
+function updateAmount(e) {
+    localStorage.setItem('amount', e.target.value);
+    amountInput.value = e.target.value;
+    calculate(amountInput.value, interest, period);
+    return;
+}
+function updatePeriod(e) {
+    localStorage.setItem('period', e.target.value);
+    periodRange.value = e.target.value;
+    periodText.forEach((el)=>el.textContent = `${periodRange.value} ${periodRange.value > 1 ? 'months' : 'month'}`
+    );
+    calculate(amount, interest, periodRange.value);
+    return;
+}
+function calculateReturns(amount1, interest1, period1) {
+    if (amount1 < 0) output.violations.push('invalid-initial-amount');
+    if (interest1 < 0) output.violations.push('invalid-interest');
+    if (period1 < 0) output.violations.push('invalid-period');
+    return amount1 * (interest1 / 100) * period1;
+}
+function calculateGrossValue(amount1, period1, returnAmt) {
+    const taxRate = tax.find((rule)=>period1 >= rule.period
+    );
+    let grossTotal = amount1 + parseFloat(returnAmt);
+    output.gross = grossTotal;
+    output.tax = taxRate.rate;
+    return;
+}
+function calculate(amount1, interest1, period1) {
+    const returnAmt = calculateReturns(amount1, interest1, period1);
+    calculateGrossValue(amount1, period1, returnAmt);
+    if (output.violations.length > 0) {
+        output.gross = 0;
+        output.tax = 0;
+    }
+    const totalValue = output.gross - returnAmt * (output.tax / 100);
+    totalValueText.textContent = totalValue.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    });
+    grossValueText.textContent = output.gross.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    });
+    return;
+}
+amountInput.addEventListener('change', updateAmount);
+periodRange.addEventListener('change', updatePeriod);
+calculate(amount, interest, period);
 
-},{"./assets/style/style.scss":"01YTL"}],"01YTL":[function() {},{}]},["8Ye98","6cF5V"], "6cF5V", "parcelRequire683a")
+},{"./assets/style/style.scss":"01YTL","./data.json":"8wf2A"}],"01YTL":[function() {},{}],"8wf2A":[function(require,module,exports) {
+module.exports = JSON.parse("{\"initial-amount\":4000,\"interest\":0.5,\"period\":10}");
+
+},{}]},["8Ye98","6cF5V"], "6cF5V", "parcelRequire683a")
 
 //# sourceMappingURL=index.5cb7de60.js.map

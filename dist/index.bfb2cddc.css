@@ -18,6 +18,18 @@ body {
   justify-content: flex-end;
 }
 
+#calc-area #currency-amt, #calc-area input {
+  font-size: 25px;
+  color: black;
+}
+#calc-area input {
+  background: transparent;
+  border: none;
+}
+#calc-area input:focus-visible {
+  outline: none;
+}
+
 #result-area {
   background: white;
   padding: 30px;
