@@ -3,26 +3,26 @@
   <script type="module" src="index.js"></script>
   <body>
     <main id="root">
-      <section id="calc-area">
-        <div id="amount">
+      <section class="calc-area">
+        <div class="amount-area">
           <p>First deposit</p>
-          <span id="currency-amt">R$</span>
-          <input id="amt-input">
-          <button id="sbt-btn">-</button>
-          <button id="add-btn">+</button>
+          <span class="currency-amt">R$</span>
+          <input id="initial-amount" value="1000">
+          <button id="sbt-btn" type="button" value="-">-</button>
+          <button id="add-btn" type="button" value="+">+</button>
         </div>
-        <div id="period">
+        <div class="period-area">
           <p>For</p>
           <p class="month-qty"></p>
-          <input type="range" min="0" max="60" id="period-range">
+          <input type="range" min="0" max="120" id="period">
         </div>
       </section>
-      <section id="result-area">
+      <section class="result-area">
         <img src="assets/img/relaxing.png">
-        <span id="result-txt">after <span class="month-qty"></span> you would have</span>
+        <p>after <span class="month-qty"></span> you would have</p>
         <h1><span id="total-value"></span></h1>
-        <p id="gross-text">(gross amount <span id="gross-value"></span>)</p>
-        <p id="disclaimer">This estimate does not constitute a guarantee of future earnings. It is only an estimate based on today's Interbank Deposit rate for the entire period that your deposit would remain in your NuConta account, and considering no withdrawals.</p>
+        <p>(gross amount <span id="gross-value"></span>)</p>
+        <p>This estimate does not constitute a guarantee of future earnings. It is only an estimate based on today's Interbank Deposit rate for the entire period that your deposit would remain in your NuConta account, and considering no withdrawals.</p>
       </section>
     </main>
   </body>

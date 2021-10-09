@@ -11,15 +11,15 @@ body {
   color: #666;
 }
 
-#calc-area, #result-area {
+.calc-area, .result-area {
   width: 30%;
   display: flex;
   flex-flow: column wrap;
   justify-content: flex-end;
 }
 
-#calc-area {
-  #currency-amt, input {
+.calc-area {
+  .currency-amt, input {
     font-size: 25px;
     color: black;
   }
@@ -33,7 +33,7 @@ body {
   
 }
 
-#result-area {
+.result-area {
   background: white;
   padding: 30px;
   img {

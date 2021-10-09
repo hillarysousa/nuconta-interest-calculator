@@ -11,30 +11,30 @@ body {
   color: #666;
 }
 
-#calc-area, #result-area {
+.calc-area, .result-area {
   width: 30%;
   display: flex;
   flex-flow: column wrap;
   justify-content: flex-end;
 }
 
-#calc-area #currency-amt, #calc-area input {
+.calc-area .currency-amt, .calc-area input {
   font-size: 25px;
   color: black;
 }
-#calc-area input {
+.calc-area input {
   background: transparent;
   border: none;
 }
-#calc-area input:focus-visible {
+.calc-area input:focus-visible {
   outline: none;
 }
 
-#result-area {
+.result-area {
   background: white;
   padding: 30px;
 }
-#result-area img {
+.result-area img {
   max-width: 100%;
   width: 140px;
   align-self: center;

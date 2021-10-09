@@ -455,12 +455,74 @@ function hmrAcceptRun(bundle, id) {
 }
 
 },{}],"6cF5V":[function(require,module,exports) {
-var _styleScss = require("./assets/style/style.scss");
-var _dataJson = require("./data.json");
-const amount = localStorage.getItem('amount') ? parseFloat(localStorage.getItem('amount')) : _dataJson['initial-amount'];
-const period = localStorage.getItem('period') ? parseInt(localStorage.getItem('period')) : _dataJson.period;
-const { interest  } = _dataJson;
-const tax = [
+"use strict";
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.refreshUI = refreshUI;
+require("./assets/style/style.scss");
+var _calculator = require("./modules/calculator");
+var _utils = require("./modules/utils");
+var amountInput = document.getElementById('initial-amount');
+var periodRange = document.getElementById('period');
+var subtractBtn = document.getElementById('sbt-btn');
+var addBtn = document.getElementById('add-btn');
+var periodText = document.querySelectorAll('.month-qty');
+var totalValueText = document.getElementById('total-value');
+var grossValueText = document.getElementById('gross-value');
+var input = {
+    'initial-amount': parseFloat(amountInput.value),
+    interest: 0.5,
+    period: parseInt(periodRange.value)
+};
+function recalculate(e) {
+    var target = e.target.id;
+    input[target] = parseFloat(e.target.value);
+    var _calculate = _calculator.calculate(input), gross = _calculate.gross, tax = _calculate.tax;
+    refreshUI(input, {
+        gross: gross,
+        tax: tax
+    });
+    return;
+}
+function refreshUI(input1, output) {
+    var period = input1.period;
+    periodText.forEach(function(el) {
+        return el.textContent = "".concat(period, " ").concat(period > 1 ? 'months' : 'month');
+    });
+    var totalValue = output.gross - (output.gross - input1['initial-amount']) * (output.tax / 100);
+    totalValueText.textContent = totalValue.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    });
+    grossValueText.textContent = output.gross.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    });
+    input1['initial-amount'] === 0 ? subtractBtn.disabled = true : subtractBtn.disabled = false;
+    return;
+}
+amountInput.addEventListener('change', recalculate);
+periodRange.addEventListener('change', recalculate);
+subtractBtn.addEventListener('click', function() {
+    return _utils.subtractFromAmount(amountInput);
+});
+addBtn.addEventListener('click', function() {
+    return _utils.addToAmount(amountInput);
+});
+var _calculate2 = _calculator.calculate(input), gross = _calculate2.gross, tax = _calculate2.tax;
+refreshUI(input, {
+    gross: gross,
+    tax: tax
+});
+
+},{"./assets/style/style.scss":"01YTL","./modules/calculator":"5yCs3","./modules/utils":"jv8B7"}],"01YTL":[function() {},{}],"5yCs3":[function(require,module,exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.calculate = calculate;
+var tax = [
     {
         period: 19,
         rate: 15
@@ -476,74 +538,60 @@ const tax = [
     {
         period: 0,
         rate: 22.5
-    }, 
+    }
 ];
-const output = {
+var output = {
     gross: 0,
     tax: 0,
     violations: []
 };
-const amountInput = document.getElementById('amt-input');
-const periodRange = document.getElementById('period-range');
-const periodText = document.querySelectorAll('.month-qty');
-const totalValueText = document.getElementById('total-value');
-const grossValueText = document.getElementById('gross-value');
-amountInput.value = amount;
-periodRange.value = period;
-periodText.forEach((el)=>el.textContent = `${periodRange.value} ${periodRange.value > 1 ? 'months' : 'month'}`
-);
-function updateAmount(e) {
-    localStorage.setItem('amount', e.target.value);
-    amountInput.value = e.target.value;
-    calculate(amountInput.value, interest, period);
-    return;
+function calculateReturns(amount, interest, period) {
+    if (amount < 0) output.violations.push('invalid-initial-amount');
+    if (interest < 0) output.violations.push('invalid-interest');
+    if (period < 0) output.violations.push('invalid-period');
+    return amount * (interest / 100) * period;
 }
-function updatePeriod(e) {
-    localStorage.setItem('period', e.target.value);
-    periodRange.value = e.target.value;
-    periodText.forEach((el)=>el.textContent = `${periodRange.value} ${periodRange.value > 1 ? 'months' : 'month'}`
-    );
-    calculate(amount, interest, periodRange.value);
-    return;
-}
-function calculateReturns(amount1, interest1, period1) {
-    if (amount1 < 0) output.violations.push('invalid-initial-amount');
-    if (interest1 < 0) output.violations.push('invalid-interest');
-    if (period1 < 0) output.violations.push('invalid-period');
-    return amount1 * (interest1 / 100) * period1;
-}
-function calculateGrossValue(amount1, period1, returnAmt) {
-    const taxRate = tax.find((rule)=>period1 >= rule.period
-    );
-    let grossTotal = amount1 + parseFloat(returnAmt);
+function calculateGrossValue(amount, period, returnAmt) {
+    var taxRate = tax.find(function(t) {
+        return period >= t.period;
+    });
+    var grossTotal = amount + parseFloat(returnAmt);
     output.gross = grossTotal;
     output.tax = taxRate.rate;
     return;
 }
-function calculate(amount1, interest1, period1) {
-    const returnAmt = calculateReturns(amount1, interest1, period1);
-    calculateGrossValue(amount1, period1, returnAmt);
+function calculate(data) {
+    output.violations = [];
+    var interest = data.interest, period = data.period;
+    var amount = data['initial-amount'];
+    var returnAmt = calculateReturns(amount, interest, period);
+    calculateGrossValue(amount, period, returnAmt);
     if (output.violations.length > 0) {
         output.gross = 0;
         output.tax = 0;
     }
-    const totalValue = output.gross - returnAmt * (output.tax / 100);
-    totalValueText.textContent = totalValue.toLocaleString('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-    });
-    grossValueText.textContent = output.gross.toLocaleString('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-    });
-    return;
+    return output;
 }
-amountInput.addEventListener('change', updateAmount);
-periodRange.addEventListener('change', updatePeriod);
-calculate(amount, interest, period);
 
-},{"./assets/style/style.scss":"01YTL","./data.json":"8wf2A"}],"01YTL":[function() {},{}],"8wf2A":[function(require,module,exports) {
-module.exports = JSON.parse("{\"initial-amount\":4000,\"interest\":0.5,\"period\":10}");
+},{}],"jv8B7":[function(require,module,exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.addToAmount = addToAmount;
+exports.subtractFromAmount = subtractFromAmount;
+function eventDispatcher(eventType, element) {
+    var event = new Event(eventType);
+    element.dispatchEvent(event);
+}
+function subtractFromAmount(element) {
+    element.value = parseFloat(element.value) - 100;
+    eventDispatcher('change', element);
+}
+function addToAmount(element) {
+    element.value = parseFloat(element.value) + 100;
+    eventDispatcher('change', element);
+}
 
 },{}]},["8Ye98","6cF5V"], "6cF5V", "parcelRequire683a")
 
