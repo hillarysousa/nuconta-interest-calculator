@@ -11,39 +11,43 @@ let output = {
   violations: []
 };
 
-
-function calculateReturns(amount, interest, period) {
+function checkForViolations(amount, interest, period) {
+  const violations = [];
   if (amount < 0) {
-    output.violations.push('invalid-initial-amount');
+    violations.push('invalid-initial-amount');
   }
   if (interest < 0) {
-    output.violations.push('invalid-interest');
+    violations.push('invalid-interest');
   }
   if (period < 0) {
-    output.violations.push('invalid-period');
+    violations.push('invalid-period');
   }
-  return amount * (interest / 100) * period;
-}
 
-function calculateGrossValue(amount, period, returnAmt) {
-  const taxRate = tax.find(t => period >= t.period);
-  let grossTotal = amount + parseFloat(returnAmt);
-  output.gross = grossTotal;
-  output.tax = taxRate.rate;
-  return;
-}
+  return violations;
+};
+
+function calculateReturns(amount, interest, period) {
+  const interestRate = interest/100;
+  return amount * Math.pow((1 + interestRate), period);
+};
 
 export function calculate(data) {
+  output.gross = 0;
+  output.tax = 0;
   output.violations = [];
   const { interest, period } = data;
   const amount = data['initial-amount'];
+  const violations = checkForViolations(amount, interest, period);
+
+  if (violations.length > 0) {
+    output.violations = violations;
+    return output;
+  };
+
   const returnAmt = calculateReturns(amount, interest, period);
+  const taxRate = tax.find(t => period >= t.period);
 
-  calculateGrossValue(amount, period, returnAmt);
-
-  if (output.violations.length > 0) {
-    output.gross = 0;
-    output.tax = 0;
-  }
+  output.gross = Number(returnAmt.toFixed(5));
+  output.tax = taxRate.rate;
   return output;
-}
+};

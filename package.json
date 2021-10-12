@@ -6,7 +6,7 @@
   "scripts": {
     "start": "parcel src/index.html",
     "build": "parcel build src/assets/style.scss",
-    "test": "jest"
+    "test": "cross-env NODE_ICU_DATA=node_modules/full-icu jest --coverage"
   },
   "author": "",
   "license": "ISC",
@@ -15,10 +15,20 @@
     "@parcel/transformer-image": "2.0.0-rc.0",
     "@parcel/transformer-sass": "2.0.0-rc.0",
     "babel-jest": "^27.2.5",
+    "cross-env": "^7.0.3",
+    "full-icu": "^1.4.0",
     "jest": "^27.2.4",
     "parcel": "^2.0.0-rc.0"
   },
   "dependencies": {
+    "cleave.js": "^1.6.0",
     "sass": "^1.42.1"
+  },
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "jsdom",
+    "moduleNameMapper": {
+      "^.+\\.(css|less|scss)$": "babel-jest"
+    }
   }
 }

@@ -1,4 +1,27 @@
 /* colors */
 $purple: #7e25b7;
 $light-gray: #f5f5f5;
-$medium-gray: #666;
+$medium-gray: #c9c9c9;
+$gray: #666;
+
+@mixin transition {
+  -webkit-transition: all 0.1s 0s ease-in-out;
+  -moz-transition: all 0.1s 0s ease-in-out;
+  transition: all 0.1s 0s ease-in-out;
+}
+
+@mixin box-shadow {
+  -webkit-box-shadow: 2px 2px 3px 1px rgba(0,0,0,0.1);
+  -moz-box-shadow: 2px 2px 3px 1px rgba(0,0,0,0.1);
+  box-shadow: 2px 2px 3px 1px rgba(0,0,0,0.1);
+}
+
+@function rangetracker($color, $size) {
+  $val: 1px 0 0 $size $color;
+  
+  @for $i from 6 through 1000 {
+    $val: #{$val}, #{$i}px 0 0 $size #{$color};
+  }
+  
+  @return $val;
+}
